@@ -29,6 +29,8 @@ FetchContent_MakeAvailable(SDL2 glm)
 add_executable(software_renderer
     src/main.cpp
     src/framebuffer.cpp
+    src/line.cpp
+    src/triangle.cpp
 )
 
 target_link_libraries(software_renderer PRIVATE SDL2::SDL2main SDL2::SDL2-static glm::glm)

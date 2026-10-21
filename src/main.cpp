@@ -4,6 +4,7 @@
 #include <vector>
 #include "color.h"
 #include "framebuffer.h"
+#include "triangle.h"
 
 SDL_Window* window = nullptr;
 SDL_Renderer* renderer = nullptr;
@@ -27,6 +28,8 @@ void setColor(const Color& color) {
 }
 
 void render() {
+    // triangulo de prueba, se reemplaza al cargar el modelo
+    triangle(glm::vec3(400, 100, 0), glm::vec3(150, 500, 0), glm::vec3(650, 450, 0));
 }
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {

@@ -5,10 +5,15 @@
 #include "color.h"
 #include "framebuffer.h"
 #include "triangle.h"
+#include "obj_loader.h"
 
 SDL_Window* window = nullptr;
 SDL_Renderer* renderer = nullptr;
 Color currentColor;
+
+// datos del modelo tal como vienen en el obj
+std::vector<glm::vec3> vertices;
+std::vector<Face> faces;
 
 bool init() {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -33,6 +38,11 @@ void render() {
 }
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
+    if (!loadOBJ(MODEL_PATH, vertices, faces)) {
+        return 1;
+    }
+    std::cout << "Modelo cargado: " << vertices.size() << " vertices, " << faces.size() << " caras" << std::endl;
+
     if (!init()) {
         return 1;
     }

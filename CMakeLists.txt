@@ -31,7 +31,11 @@ add_executable(software_renderer
     src/framebuffer.cpp
     src/line.cpp
     src/triangle.cpp
+    src/obj_loader.cpp
 )
+
+# ruta absoluta del modelo para poder ejecutar el programa desde cualquier carpeta
+target_compile_definitions(software_renderer PRIVATE MODEL_PATH="${CMAKE_CURRENT_SOURCE_DIR}/models/nave.obj")
 
 target_link_libraries(software_renderer PRIVATE SDL2::SDL2main SDL2::SDL2-static glm::glm)
 

@@ -3,6 +3,17 @@
 #include <algorithm>
 #include <vector>
 
+// stb usa sprintf internamente, se oculta ese aviso de msvc solo para este header
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4996)
+#endif
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <stb_image_write.h>
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 // la textura espera exactamente 4 bytes por pixel
 static_assert(sizeof(Color) == 4, "Color debe ocupar 4 bytes");
 
@@ -41,4 +52,10 @@ void renderBuffer(SDL_Renderer* renderer) {
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, texture, nullptr, nullptr);
     SDL_RenderPresent(renderer);
+}
+
+bool savePNG(const char* filename) {
+    // el framebuffer ya esta en rgba fila por fila, se escribe tal cual
+    return stbi_write_png(filename, SCREEN_WIDTH, SCREEN_HEIGHT, 4, framebuffer.data(),
+                          SCREEN_WIDTH * static_cast<int>(sizeof(Color))) != 0;
 }

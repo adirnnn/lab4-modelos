@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <algorithm>
+#include <string>
 #include <vector>
 #include "color.h"
 #include "framebuffer.h"
@@ -94,13 +95,31 @@ void render() {
     }
 }
 
-int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
+bool saveScreenshot(const char* filename) {
+    // guarda lo que hay en el framebuffer en ese momento
+    if (!savePNG(filename)) {
+        std::cerr << "No se pudo guardar " << filename << std::endl;
+        return false;
+    }
+    std::cout << "Imagen guardada en " << filename << std::endl;
+    return true;
+}
+
+int main(int argc, char* argv[]) {
     if (!loadOBJ(MODEL_PATH, vertices, faces) || faces.empty()) {
         std::cerr << "No se encontro un modelo para dibujar" << std::endl;
         return 1;
     }
     std::cout << "Modelo cargado: " << vertices.size() << " vertices, " << faces.size() << " caras" << std::endl;
     prepareVertices();
+
+    // con --screenshot <archivo> se dibuja un solo frame, se guarda y termina sin abrir ventana
+    if (argc == 3 && std::string(argv[1]) == "--screenshot") {
+        clear();
+        setColor(Color(255, 255, 0));
+        render();
+        return saveScreenshot(argv[2]) ? 0 : 1;
+    }
 
     if (!init()) {
         return 1;
@@ -109,9 +128,14 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
     bool running = true;
     while (running) {
         SDL_Event event;
+        bool screenshotRequested = false;
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 running = false;
+            }
+            // la tecla s guarda el frame actual como render.png
+            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_s) {
+                screenshotRequested = true;
             }
         }
 
@@ -119,6 +143,10 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
 
         setColor(Color(255, 255, 0));
         render();
+
+        if (screenshotRequested) {
+            saveScreenshot("render.png");
+        }
 
         renderBuffer(renderer);
     }

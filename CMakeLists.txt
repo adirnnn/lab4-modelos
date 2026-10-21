@@ -24,7 +24,14 @@ FetchContent_Declare(
     GIT_SHALLOW TRUE
 )
 
-FetchContent_MakeAvailable(SDL2 glm)
+# stb no trae cmake, solo se usa su header para guardar png
+FetchContent_Declare(
+    stb
+    GIT_REPOSITORY https://github.com/nothings/stb.git
+    GIT_TAG a7d4c2175630e1ea5b6f8dd00ab96fed0b97b96d
+)
+
+FetchContent_MakeAvailable(SDL2 glm stb)
 
 add_executable(software_renderer
     src/main.cpp
@@ -38,6 +45,7 @@ add_executable(software_renderer
 target_compile_definitions(software_renderer PRIVATE MODEL_PATH="${CMAKE_CURRENT_SOURCE_DIR}/models/nave.obj")
 
 target_link_libraries(software_renderer PRIVATE SDL2::SDL2main SDL2::SDL2-static glm::glm)
+target_include_directories(software_renderer PRIVATE ${stb_SOURCE_DIR})
 
 if(MSVC)
     target_compile_options(software_renderer PRIVATE /W4 /utf-8)

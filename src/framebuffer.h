@@ -13,3 +13,4 @@ void setClearColor(const Color& color);
 void clear();
 void point(int x, int y);
 void renderBuffer(SDL_Renderer* renderer);
+bool savePNG(const char* filename);
